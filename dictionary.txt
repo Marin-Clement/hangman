@@ -1,0 +1,5 @@
+# Sample dictionary file for testing
+apple,fruits,facile
+banana,fruits,moyen
+carrot,vegetables,facile
+elephant,animals,difficile

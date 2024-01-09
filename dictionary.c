@@ -7,7 +7,7 @@ int isValidDifficulty(const char *difficulty) {
 int readDictionary(const char *filename, WordInfo *dictionary, int maxWords) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        printf("Error opening file %s\n", filename);
+        printf("Erreur lors de l'ouverture du fichier %s\n", filename);
         return 0;
     }
 
@@ -25,7 +25,7 @@ int readDictionary(const char *filename, WordInfo *dictionary, int maxWords) {
         int readItems = sscanf(line, "%[^,],%[^,],%s", wordInfo.word, wordInfo.category, wordInfo.difficulty);
 
         if (readItems != 3 || !isValidDifficulty(wordInfo.difficulty)) {
-            printf("Error in line %d: %s", lineCount, line);
+            printf("Erreur a la ligne %d du fichier %s\n", lineCount, filename);
             continue;
         }
 

@@ -4,7 +4,7 @@ void clearScreen() {
     printf("\033[2J\033[1;1H");
 }
 
-void displayLetterNotUsed(int letterUsed[26]) {
+void displayLetterNotUsed(const int letterUsed[26]) {
     printf("Letters not used: ");
     for (int i = 0; i < 26; ++i) {
         if (!letterUsed[i]) {
@@ -96,7 +96,7 @@ void startHangmanGame(const WordInfo *dictionary, int numWords, const char *diff
     }
 
     const char *wordToGuess = dictionary[wordIndex].word;
-    int wordLength = strlen(wordToGuess);
+    int wordLength = (int)strlen(wordToGuess);
     char guessedLetters[wordLength + 1];
     memset(guessedLetters, '_', wordLength);
     guessedLetters[wordLength] = '\0';
@@ -150,7 +150,7 @@ void processUserGuess(const char *wordToGuess, char *guessedLetters, int *numWro
         return;
     }
 
-    letter = tolower(letter);
+    letter = (char)tolower(letter);
 
     if (letterUsed[letter - 'a']) {
         printf("You've already entered the letter %c\n", letter);

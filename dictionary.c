@@ -1,7 +1,7 @@
 #include "hangman.h"
 
 int isValidDifficulty(const char *difficulty) {
-    return (strcmp(difficulty, "easy") == 0 || strcmp(difficulty, "medium") == 0 || strcmp(difficulty, "hard") == 0);
+    return (strcmp(difficulty, "easy") == 0 || strcmp(difficulty, "medium") == 0 || strcmp(difficulty, "difficult") == 0);
 }
 
 int readDictionary(const char *filename, WordInfo *dictionary, int maxWords) {

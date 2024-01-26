@@ -1,13 +1,13 @@
 #include "hangman.h"
 
 int isValidDifficulty(const char *difficulty) {
-    return (strcmp(difficulty, "facile") == 0 || strcmp(difficulty, "moyen") == 0 || strcmp(difficulty, "difficile") == 0);
+    return (strcmp(difficulty, "easy") == 0 || strcmp(difficulty, "medium") == 0 || strcmp(difficulty, "hard") == 0);
 }
 
 int readDictionary(const char *filename, WordInfo *dictionary, int maxWords) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        printf("Erreur lors de l'ouverture du fichier %s\n", filename);
+        printf("Error opening file %s\n", filename);
         return 0;
     }
 
@@ -25,7 +25,7 @@ int readDictionary(const char *filename, WordInfo *dictionary, int maxWords) {
         int readItems = sscanf(line, "%[^,],%[^,],%s", wordInfo.word, wordInfo.category, wordInfo.difficulty);
 
         if (readItems != 3 || !isValidDifficulty(wordInfo.difficulty)) {
-            printf("Erreur a la ligne %d du fichier %s\n", lineCount, filename);
+            printf("Invalid line %d: %s\n", lineCount, line);
             continue;
         }
 

@@ -5,7 +5,7 @@ void clearScreen() {
 }
 
 void displayLetterNotUsed(int letterUsed[26]) {
-    printf("Lettres non utilisees: ");
+    printf("Letters not used: ");
     for (int i = 0; i < 26; ++i) {
         if (!letterUsed[i]) {
             printf("%c ", 'a' + i);
@@ -80,7 +80,7 @@ void displayHangman(int guesses) {
             printf("=========\n");
             break;
         default:
-            printf("[ERREUR] Nombre de mauvais essais invalide: %d\n", guesses);
+            printf("[ERROR] Invalid number of wrong guesses: %d\n", guesses);
     }
 }
 
@@ -91,7 +91,7 @@ void startHangmanGame(const WordInfo *dictionary, int numWords, const char *diff
 
     int wordIndex = selectValidWord(dictionary, numWords, difficulty, category);
     if (wordIndex == -1) {
-        printf("Pas de mots disponibles pour la difficulte %s et la categorie %s\n", difficulty, category);
+        printf("No words available for difficulty %s and category %s\n", difficulty, category);
         return;
     }
 
@@ -119,12 +119,11 @@ void startHangmanGame(const WordInfo *dictionary, int numWords, const char *diff
     printGameStatus(&dictionary[wordIndex], guessedLetters);
 
     if (gameWon) {
-        printf("Tu as gagne!\n");
+        printf("You won!\n");
     } else {
-        printf("Tu as perdu! Le mot etait: %s\n", wordToGuess);
+        printf("You lost! The word was: %s\n", wordToGuess);
     }
 }
-
 
 // New function to select a valid word based on difficulty and category
 int selectValidWord(const WordInfo *dictionary, int numWords, const char *difficulty, const char *category) {
@@ -143,18 +142,18 @@ int selectValidWord(const WordInfo *dictionary, int numWords, const char *diffic
 
 void processUserGuess(const char *wordToGuess, char *guessedLetters, int *numWrongGuesses, int *letterUsed) {
     char letter;
-    printf("Entrez une lettre: ");
+    printf("Enter a letter: ");
     scanf(" %c", &letter);
 
     if (!isalpha(letter)) {
-        printf("Erreur: vous devez entrer une lettre\n");
+        printf("Error: you must enter a letter\n");
         return;
     }
 
     letter = tolower(letter);
 
     if (letterUsed[letter - 'a']) {
-        printf("Vous avez deja entrer la lettre %c\n", letter);
+        printf("You've already entered the letter %c\n", letter);
         return;
     }
 
@@ -175,9 +174,9 @@ void processUserGuess(const char *wordToGuess, char *guessedLetters, int *numWro
 
 // New function to print game status
 void printGameStatus(const WordInfo *wordInfo, const char *guessedLetters) {
-    printf("Categorie: %s\n", wordInfo->category);
-    printf("Difficulte: %s\n", wordInfo->difficulty);
-    printf("Mot a deviner: %s\n", guessedLetters);
+    printf("Category: %s\n", wordInfo->category);
+    printf("Difficulty: %s\n", wordInfo->difficulty);
+    printf("Word to guess: %s\n", guessedLetters);
 }
 
 int main(int argc, char *argv[]) {
@@ -190,7 +189,7 @@ int main(int argc, char *argv[]) {
     const char *category = NULL;
 
     if (argc < 3 || argc > 4) {
-        printf("Utilisation: %s <fichier> <difficulte> [categorie]\n", argv[0]);
+        printf("Usage: %s <file> <difficulty> [category]\n", argv[0]);
         return 1;
     }
 
@@ -202,22 +201,23 @@ int main(int argc, char *argv[]) {
     }
 
     if (!isValidDifficulty(difficulty)) {
-        printf("Difficulte invalide: %s\n", difficulty);
+        printf("Invalid difficulty: %s\n", difficulty);
         return 1;
     }
 
     numWords = readDictionary(filename, dictionary, MAX_DICTIONARY_SIZE);
     if (numWords == -1) {
-        printf("Impossible de lire le fichier %s\n", filename);
+        printf("Unable to read file %s\n", filename);
         return 1;
     }
+
     do {
         startHangmanGame(dictionary, numWords, difficulty, category);
 
         char answer;
-        printf("Voulez-vous jouer une autre partie? (o/n) ");
+        printf("Do you want to play another round? (y/n) ");
         scanf(" %c", &answer);
-        if (answer != 'o' && answer != 'O') {
+        if (answer != 'y' && answer != 'Y') {
             break;
         }
     } while (1);

@@ -32,6 +32,4 @@ void processUserGuess(const char *wordToGuess, char *guessedLetters, int *numWro
 
 void printGameStatus(const WordInfo *wordInfo, const char *guessedLetters);
 
-void printError(const char *message);
-
 #endif

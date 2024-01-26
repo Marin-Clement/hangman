@@ -98,8 +98,16 @@ void startHangmanGame(const WordInfo *dictionary, int numWords, const char *diff
     const char *wordToGuess = dictionary[wordIndex].word;
     int wordLength = (int) strlen(wordToGuess);
     char guessedLetters[wordLength + 1];
-    memset(guessedLetters, '_', wordLength);
+
+    guessedLetters[0] = wordToGuess[0];
+    for (int i = 1; i < wordLength - 1; ++i) {
+        guessedLetters[i] = '_';
+    }
+    guessedLetters[wordLength - 1] = wordToGuess[wordLength - 1];
     guessedLetters[wordLength] = '\0';
+
+    letterUsed[wordToGuess[0] - 'a'] = 1;
+    letterUsed[wordToGuess[wordLength - 1] - 'a'] = 1;
 
     while (numWrongGuesses < MAX_TRIES && strcmp(guessedLetters, wordToGuess) != 0) {
         clearScreen();
@@ -213,7 +221,7 @@ int main(int argc, char *argv[]) {
         startHangmanGame(dictionary, numWords, difficulty, category);
 
         char answer;
-        printf("Do you want to play another round? (y/n) ");
+        printf("Do you want to play again? (y/n): ");
         scanf(" %c", &answer);
         if (answer != 'y' && answer != 'Y') {
             break;

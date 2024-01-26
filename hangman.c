@@ -1,7 +1,5 @@
 #include "hangman.h"
 
-void displayHangman(int guesses);
-
 void clearScreen() {
     printf("\033[2J\033[1;1H");
 }
@@ -81,12 +79,49 @@ void displayHangman(int guesses) {
             printf("      |\n");
             printf("=========\n");
             break;
+        default:
+            printf("[ERREUR] Nombre de mauvais essais invalide: %d\n", guesses);
     }
 }
 
 void startHangmanGame(const WordInfo *dictionary, int numWords, const char *difficulty, const char *category) {
     int numWrongGuesses = 0;
     int letterUsed[26] = {0};
+
+    int wordIndex = selectValidWord(dictionary, numWords, difficulty, category);
+    if (wordIndex == -1) {
+        printf("Pas de mots disponibles pour la difficulte %s et la categorie %s\n", difficulty, category);
+        return;
+    }
+
+    const char *wordToGuess = dictionary[wordIndex].word;
+    int wordLength = strlen(wordToGuess);
+    char guessedLetters[wordLength + 1];  // Include space for null terminator
+    memset(guessedLetters, '_', wordLength);
+    guessedLetters[wordLength] = '\0';
+
+    while (numWrongGuesses < MAX_TRIES && strcmp(guessedLetters, wordToGuess) != 0) {
+        clearScreen();
+        displayHangman(numWrongGuesses);
+        displayLetterNotUsed(letterUsed);
+        printGameStatus(&dictionary[wordIndex], guessedLetters, numWrongGuesses);
+
+        processUserGuess(wordToGuess, guessedLetters, &numWrongGuesses, letterUsed);
+    }
+
+    clearScreen();
+    displayHangman(numWrongGuesses);
+    printGameStatus(&dictionary[wordIndex], guessedLetters, numWrongGuesses);
+
+    if (numWrongGuesses >= MAX_TRIES) {
+        printf("Tu as perdu! Le mot etait: %s\n", wordToGuess);
+    } else {
+        printf("Tu as gagne!\n");
+    }
+}
+
+// New function to select a valid word based on difficulty and category
+int selectValidWord(const WordInfo *dictionary, int numWords, const char *difficulty, const char *category) {
     int validWords[MAX_DICTIONARY_SIZE];
     int numValidWords = 0;
 
@@ -97,33 +132,20 @@ void startHangmanGame(const WordInfo *dictionary, int numWords, const char *diff
         }
     }
 
-    if (numValidWords == 0) {
-        printf("Pas de mots disponibles pour la difficulte %s et la categorie %s\n", difficulty, category);
-        return;
-    }
+    return (numValidWords > 0) ? validWords[rand() % numValidWords] : -1;
+}
 
-    int wordIndex = validWords[rand() % numValidWords];
-    const char *wordToGuess = dictionary[wordIndex].word;
-    int wordLength = strlen(wordToGuess);
-    char guessedLetters[wordLength];
-    memset(guessedLetters, '_', wordLength);
-    guessedLetters[wordLength] = '\0';
+// Updated processUserGuess function without updateGuessedLetters
+void processUserGuess(const char *wordToGuess, char *guessedLetters, int *numWrongGuesses, int *letterUsed) {
+    printf("Entrez une lettre: ");
+    char input[2];  // Allow only one character input
+    fgets(input, sizeof(input), stdin);
 
-    while (numWrongGuesses < MAX_TRIES && strcmp(guessedLetters, wordToGuess) != 0) {
-        clearScreen();
-        displayHangman(numWrongGuesses);
-        displayLetterNotUsed(letterUsed);
-        printf("Categorie: %s\n", dictionary[wordIndex].category);
-        printf("Difficulte: %s\n", dictionary[wordIndex].difficulty);
-        printf("Mot a deviner: %s\n", guessedLetters);
-
-        printf("Entrez une lettre: ");
-        char guess;
-        scanf(" %c", &guess);
-        getchar();
-
+    if (isalpha(input[0]) && input[1] == '\n') {
+        char guess = tolower(input[0]);  // Convert to lowercase for consistency
         int found = 0;
-        for (int i = 0; i < wordLength; ++i) {
+
+        for (int i = 0; wordToGuess[i] != '\0'; ++i) {
             if (wordToGuess[i] == guess) {
                 guessedLetters[i] = guess;
                 found = 1;
@@ -131,23 +153,20 @@ void startHangmanGame(const WordInfo *dictionary, int numWords, const char *diff
         }
 
         if (!found) {
-            numWrongGuesses++;
+            (*numWrongGuesses)++;
         }
 
         letterUsed[guess - 'a'] = 1;
-    }
-
-    clearScreen();
-    displayHangman(numWrongGuesses);
-    printf("Categorie: %s\n", dictionary[wordIndex].category);
-    printf("Difficulte: %s\n", dictionary[wordIndex].difficulty);
-    printf("Mot a deviner: %s\n", guessedLetters);
-
-    if (numWrongGuesses >= MAX_TRIES) {
-        printf("Tu as perdu! Le mot etait: %s\n", wordToGuess);
     } else {
-        printf("Tu as gagne!\n");
+        printf("Veuillez entrer une seule lettre.\n");
     }
+}
+
+// New function to print game status
+void printGameStatus(const WordInfo *wordInfo, const char *guessedLetters, int numWrongGuesses) {
+    printf("Categorie: %s\n", wordInfo->category);
+    printf("Difficulte: %s\n", wordInfo->difficulty);
+    printf("Mot a deviner: %s\n", guessedLetters);
 }
 
 int main(int argc, char *argv[]) {

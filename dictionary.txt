@@ -1,0 +1,44 @@
+# Dictionary of Words
+# Format: word,category,difficulty
+# Difficulty: easy, medium, difficult
+# Sample words
+apple,fruit,easy
+elephant,animal,medium
+quadratic,math,difficult
+ocean,nature,easy
+algorithm,computer science,medium
+benevolent,adjective,difficult
+guitar,music,easy
+nebula,astronomy,medium
+exquisite,adjective,difficult
+volcano,geology,medium
+paradox,philosophy,difficult
+tiger,animal,medium
+synergy,business,medium
+ephemeral,adjective,difficult
+jazz,music,medium
+cascade,nature,easy
+integer,math,medium
+serendipity,noun,difficult
+velocity,physics,medium
+dystopia,literature,difficult
+moon,astronomy,easy
+cucumber,vegetable,easy
+penguin,animal,medium
+symphony,music,difficult
+entrepreneur,business,difficult
+microscope,science,medium
+zenith,navigation,medium
+allegory,literature,difficult
+puzzle,game,medium
+serenity,emotion,easy
+algorithmic,computer science,difficult
+dolphin,animal,easy
+harmony,music,easy
+integral,math,medium
+quasar,astronomy,difficult
+tornado,meteorology,medium
+cacophony,noise,difficult
+quiver,nature,easy
+algorithmically,computer science,difficult
+cosmic,astronomy,medium

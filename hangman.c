@@ -96,7 +96,7 @@ void startHangmanGame(const WordInfo *dictionary, int numWords, const char *diff
     }
 
     const char *wordToGuess = dictionary[wordIndex].word;
-    int wordLength = (int)strlen(wordToGuess);
+    int wordLength = (int) strlen(wordToGuess);
     char guessedLetters[wordLength + 1];
     memset(guessedLetters, '_', wordLength);
     guessedLetters[wordLength] = '\0';
@@ -110,7 +110,7 @@ void startHangmanGame(const WordInfo *dictionary, int numWords, const char *diff
         processUserGuess(wordToGuess, guessedLetters, &numWrongGuesses, letterUsed);
 
         if (strcmp(guessedLetters, wordToGuess) == 0) {
-            gameWon = 1; // Set the flag to indicate that the game is won
+            gameWon = 1;
         }
     }
 
@@ -125,7 +125,6 @@ void startHangmanGame(const WordInfo *dictionary, int numWords, const char *diff
     }
 }
 
-// New function to select a valid word based on difficulty and category
 int selectValidWord(const WordInfo *dictionary, int numWords, const char *difficulty, const char *category) {
     int validWords[MAX_DICTIONARY_SIZE];
     int numValidWords = 0;
@@ -150,7 +149,7 @@ void processUserGuess(const char *wordToGuess, char *guessedLetters, int *numWro
         return;
     }
 
-    letter = (char)tolower(letter);
+    letter = (char) tolower(letter);
 
     if (letterUsed[letter - 'a']) {
         printf("You've already entered the letter %c\n", letter);
@@ -172,7 +171,6 @@ void processUserGuess(const char *wordToGuess, char *guessedLetters, int *numWro
     }
 }
 
-// New function to print game status
 void printGameStatus(const WordInfo *wordInfo, const char *guessedLetters) {
     printf("Category: %s\n", wordInfo->category);
     printf("Difficulty: %s\n", wordInfo->difficulty);

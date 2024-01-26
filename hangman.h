@@ -30,6 +30,8 @@ int selectValidWord(const WordInfo *dictionary, int numWords, const char *diffic
 
 void processUserGuess(const char *wordToGuess, char *guessedLetters, int *numWrongGuesses, int *letterUsed);
 
-void printGameStatus(const WordInfo *wordInfo, const char *guessedLetters, int numWrongGuesses);
+void printGameStatus(const WordInfo *wordInfo, const char *guessedLetters);
+
+void printError(const char *message);
 
 #endif

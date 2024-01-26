@@ -87,6 +87,7 @@ void displayHangman(int guesses) {
 void startHangmanGame(const WordInfo *dictionary, int numWords, const char *difficulty, const char *category) {
     int numWrongGuesses = 0;
     int letterUsed[26] = {0};
+    int gameWon = 0;
 
     int wordIndex = selectValidWord(dictionary, numWords, difficulty, category);
     if (wordIndex == -1) {
@@ -96,7 +97,7 @@ void startHangmanGame(const WordInfo *dictionary, int numWords, const char *diff
 
     const char *wordToGuess = dictionary[wordIndex].word;
     int wordLength = strlen(wordToGuess);
-    char guessedLetters[wordLength + 1];  // Include space for null terminator
+    char guessedLetters[wordLength + 1];
     memset(guessedLetters, '_', wordLength);
     guessedLetters[wordLength] = '\0';
 
@@ -104,21 +105,26 @@ void startHangmanGame(const WordInfo *dictionary, int numWords, const char *diff
         clearScreen();
         displayHangman(numWrongGuesses);
         displayLetterNotUsed(letterUsed);
-        printGameStatus(&dictionary[wordIndex], guessedLetters, numWrongGuesses);
+        printGameStatus(&dictionary[wordIndex], guessedLetters);
 
         processUserGuess(wordToGuess, guessedLetters, &numWrongGuesses, letterUsed);
+
+        if (strcmp(guessedLetters, wordToGuess) == 0) {
+            gameWon = 1; // Set the flag to indicate that the game is won
+        }
     }
 
     clearScreen();
     displayHangman(numWrongGuesses);
-    printGameStatus(&dictionary[wordIndex], guessedLetters, numWrongGuesses);
+    printGameStatus(&dictionary[wordIndex], guessedLetters);
 
-    if (numWrongGuesses >= MAX_TRIES) {
-        printf("Tu as perdu! Le mot etait: %s\n", wordToGuess);
-    } else {
+    if (gameWon) {
         printf("Tu as gagne!\n");
+    } else {
+        printf("Tu as perdu! Le mot etait: %s\n", wordToGuess);
     }
 }
+
 
 // New function to select a valid word based on difficulty and category
 int selectValidWord(const WordInfo *dictionary, int numWords, const char *difficulty, const char *category) {
@@ -135,35 +141,40 @@ int selectValidWord(const WordInfo *dictionary, int numWords, const char *diffic
     return (numValidWords > 0) ? validWords[rand() % numValidWords] : -1;
 }
 
-// Updated processUserGuess function without updateGuessedLetters
 void processUserGuess(const char *wordToGuess, char *guessedLetters, int *numWrongGuesses, int *letterUsed) {
+    char letter;
     printf("Entrez une lettre: ");
-    char input[2];  // Allow only one character input
-    fgets(input, sizeof(input), stdin);
+    scanf(" %c", &letter);
 
-    if (isalpha(input[0]) && input[1] == '\n') {
-        char guess = tolower(input[0]);  // Convert to lowercase for consistency
-        int found = 0;
+    if (!isalpha(letter)) {
+        printf("Erreur: vous devez entrer une lettre\n");
+        return;
+    }
 
-        for (int i = 0; wordToGuess[i] != '\0'; ++i) {
-            if (wordToGuess[i] == guess) {
-                guessedLetters[i] = guess;
-                found = 1;
-            }
+    letter = tolower(letter);
+
+    if (letterUsed[letter - 'a']) {
+        printf("Vous avez deja entrer la lettre %c\n", letter);
+        return;
+    }
+
+    letterUsed[letter - 'a'] = 1;
+
+    int found = 0;
+    for (int i = 0; wordToGuess[i] != '\0'; ++i) {
+        if (wordToGuess[i] == letter) {
+            guessedLetters[i] = letter;
+            found = 1;
         }
+    }
 
-        if (!found) {
-            (*numWrongGuesses)++;
-        }
-
-        letterUsed[guess - 'a'] = 1;
-    } else {
-        printf("Veuillez entrer une seule lettre.\n");
+    if (!found) {
+        (*numWrongGuesses)++;
     }
 }
 
 // New function to print game status
-void printGameStatus(const WordInfo *wordInfo, const char *guessedLetters, int numWrongGuesses) {
+void printGameStatus(const WordInfo *wordInfo, const char *guessedLetters) {
     printf("Categorie: %s\n", wordInfo->category);
     printf("Difficulte: %s\n", wordInfo->difficulty);
     printf("Mot a deviner: %s\n", guessedLetters);
@@ -200,7 +211,16 @@ int main(int argc, char *argv[]) {
         printf("Impossible de lire le fichier %s\n", filename);
         return 1;
     }
+    do {
+        startHangmanGame(dictionary, numWords, difficulty, category);
 
-    startHangmanGame(dictionary, numWords, difficulty, category);
+        char answer;
+        printf("Voulez-vous jouer une autre partie? (o/n) ");
+        scanf(" %c", &answer);
+        if (answer != 'o' && answer != 'O') {
+            break;
+        }
+    } while (1);
+
     return 0;
 }
